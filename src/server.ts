@@ -1,8 +1,7 @@
 import express from 'express';
-import { Router, Request, Response } from 'express';
+import {  Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
-const router: Router = Router();
 
 (async () => {
 
@@ -20,15 +19,15 @@ const router: Router = Router();
 
   app.get('/filteredimage', async (req, res) => {    
     let url = req.query.image_url.toString();
+    let image_array : string[] = []    
+
     if(!url){
       return res.status(400).send({message:"bad request!"});
     }
-    let image_array : string[] = []    
     try{
       const img = await filterImageFromURL(url)
       image_array = [img]
-      //res.send(img);
-      const r = await res.sendFile(img);
+      await res.sendFile(img);
     } catch{
       return res.status(422).send({ message: 'Cannot read image' });
     }
